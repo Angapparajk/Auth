@@ -1,7 +1,9 @@
 // routes/auth.js
+
 const express = require('express');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const Cookies = require('cookies');
 const db = require('../db');
 
 const router = express.Router();
@@ -42,10 +44,13 @@ router.post('/login', (req, res) => {
       return res.status(401).json({ message: 'Invalid credentials' });
     }
     const token = jwt.sign({ id: user.id, email: user.email }, JWT_SECRET, { expiresIn: '1h' });
-    res.cookie('token', token, {
+    const cookies = new Cookies(req, res);
+    cookies.set('token', token, {
       httpOnly: true,
-      sameSite: 'none', // required for cross-site cookies
-      secure: true      // required for HTTPS
+      sameSite: 'none',
+      secure: true,
+      path: '/',
+      overwrite: true
     });
     res.json({ message: 'Login successful', token });
   });
@@ -53,7 +58,15 @@ router.post('/login', (req, res) => {
 
 // Logout
 router.post('/logout', (req, res) => {
-  res.clearCookie('token');
+  const cookies = new Cookies(req, res);
+  cookies.set('token', '', {
+    httpOnly: true,
+    sameSite: 'none',
+    secure: true,
+    path: '/',
+    expires: new Date(0),
+    overwrite: true
+  });
   res.json({ message: 'Logged out successfully' });
 });
 
