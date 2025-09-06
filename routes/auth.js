@@ -45,10 +45,11 @@ router.post('/login', (req, res) => {
     }
     const token = jwt.sign({ id: user.id, email: user.email }, JWT_SECRET, { expiresIn: '1h' });
     const cookies = new Cookies(req, res);
+    const isProduction = process.env.NODE_ENV === 'production';
     cookies.set('token', token, {
       httpOnly: true,
       sameSite: 'none',
-      secure: true,
+      secure: isProduction,
       path: '/',
       overwrite: true
     });
@@ -59,10 +60,11 @@ router.post('/login', (req, res) => {
 // Logout
 router.post('/logout', (req, res) => {
   const cookies = new Cookies(req, res);
+  const isProduction = process.env.NODE_ENV === 'production';
   cookies.set('token', '', {
     httpOnly: true,
     sameSite: 'none',
-    secure: true,
+    secure: isProduction,
     path: '/',
     expires: new Date(0),
     overwrite: true
