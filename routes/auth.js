@@ -8,6 +8,9 @@ const db = require('../db');
 
 const router = express.Router();
 const JWT_SECRET = process.env.JWT_SECRET;
+if (!JWT_SECRET) {
+  console.warn('JWT_SECRET is not set. Authentication endpoints will return 500 until configured.');
+}
 
 // Register
 router.post('/register', async (req, res) => {
@@ -31,6 +34,9 @@ router.post('/register', async (req, res) => {
 
 // Login
 router.post('/login', (req, res) => {
+  if (!JWT_SECRET) {
+    return res.status(500).json({ message: 'Server misconfiguration: JWT secret is missing' });
+  }
   const { email, password } = req.body;
   if (!email || !password) {
     return res.status(400).json({ message: 'Email and password required' });
@@ -76,6 +82,9 @@ router.post('/logout', (req, res) => {
 
 // Protected route example
 router.get('/dashboard', (req, res) => {
+  if (!JWT_SECRET) {
+    return res.status(500).json({ message: 'Server misconfiguration: JWT secret is missing' });
+  }
   const token = req.cookies.token;
   if (!token) return res.status(401).json({ message: 'Unauthorized' });
   try {
