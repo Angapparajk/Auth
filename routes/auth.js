@@ -42,7 +42,11 @@ router.post('/login', (req, res) => {
       return res.status(401).json({ message: 'Invalid credentials' });
     }
     const token = jwt.sign({ id: user.id, email: user.email }, JWT_SECRET, { expiresIn: '1h' });
-    res.cookie('token', token, { httpOnly: true, sameSite: 'lax' });
+    res.cookie('token', token, {
+      httpOnly: true,
+      sameSite: 'none', // required for cross-site cookies
+      secure: true      // required for HTTPS
+    });
     res.json({ message: 'Login successful', token });
   });
 });
