@@ -1,5 +1,3 @@
-// db.js
-// SQLite database setup for authentication system
 const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
 
