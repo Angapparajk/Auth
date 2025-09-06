@@ -17,7 +17,7 @@ app.set('trust proxy', 1);
 const allowedOrigins = [
   'http://localhost:5173',
   'http://127.0.0.1:5173',
-  // Add your production frontend URL below (e.g., 'https://your-frontend-domain.com')
+  'https://auth-app-omega-rouge.vercel.app/'
 ];
 
 const corsOptions = {
