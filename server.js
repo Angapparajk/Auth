@@ -35,7 +35,8 @@ const corsOptions = {
 
 // Handle CORS for all routes and ensure preflight requests succeed
 app.use(cors(corsOptions));
-app.options('*', cors(corsOptions));
+// Express 5's path-to-regexp v6 does not accept '*' route paths; use regex instead
+app.options(/.*/, cors(corsOptions));
 
 app.use('/api/auth', authRoutes);
 
